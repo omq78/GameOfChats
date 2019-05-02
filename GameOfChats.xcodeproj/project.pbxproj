@@ -7,15 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32091B2E2279DCA400B6C21D /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32091B2D2279DCA400B6C21D /* LoginController.swift */; };
 		325451762279A9300082AAC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325451752279A9300082AAC9 /* AppDelegate.swift */; };
 		325451782279A9300082AAC9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325451772279A9300082AAC9 /* ViewController.swift */; };
 		3254517B2279A9300082AAC9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 325451792279A9300082AAC9 /* Main.storyboard */; };
 		3254517E2279A9300082AAC9 /* GameOfChats.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3254517C2279A9300082AAC9 /* GameOfChats.xcdatamodeld */; };
 		325451802279A9320082AAC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3254517F2279A9320082AAC9 /* Assets.xcassets */; };
 		325451832279A9320082AAC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 325451812279A9320082AAC9 /* LaunchScreen.storyboard */; };
+		32AFFE89227A3623008EAAC2 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AFFE88227A3623008EAAC2 /* extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32091B2D2279DCA400B6C21D /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		325451722279A9300082AAC9 /* GameOfChats.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameOfChats.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		325451752279A9300082AAC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		325451772279A9300082AAC9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +27,7 @@
 		3254517F2279A9320082AAC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		325451822279A9320082AAC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		325451842279A9320082AAC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32AFFE88227A3623008EAAC2 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +41,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		32091B2C2279DC4500B6C21D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				32091B2D2279DCA400B6C21D /* LoginController.swift */,
+				325451772279A9300082AAC9 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		325451692279A9300082AAC9 = {
 			isa = PBXGroup;
 			children = (
@@ -56,13 +69,14 @@
 		325451742279A9300082AAC9 /* GameOfChats */ = {
 			isa = PBXGroup;
 			children = (
+				32091B2C2279DC4500B6C21D /* Controller */,
 				325451752279A9300082AAC9 /* AppDelegate.swift */,
-				325451772279A9300082AAC9 /* ViewController.swift */,
 				325451792279A9300082AAC9 /* Main.storyboard */,
 				3254517F2279A9320082AAC9 /* Assets.xcassets */,
 				325451812279A9320082AAC9 /* LaunchScreen.storyboard */,
 				325451842279A9320082AAC9 /* Info.plist */,
 				3254517C2279A9300082AAC9 /* GameOfChats.xcdatamodeld */,
+				32AFFE88227A3623008EAAC2 /* extensions.swift */,
 			);
 			path = GameOfChats;
 			sourceTree = "<group>";
@@ -138,8 +152,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32AFFE89227A3623008EAAC2 /* extensions.swift in Sources */,
 				325451782279A9300082AAC9 /* ViewController.swift in Sources */,
 				3254517E2279A9300082AAC9 /* GameOfChats.xcdatamodeld in Sources */,
+				32091B2E2279DCA400B6C21D /* LoginController.swift in Sources */,
 				325451762279A9300082AAC9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
