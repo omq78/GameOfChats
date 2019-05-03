@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginController: UIViewController {
 
@@ -21,16 +22,49 @@ class LoginController: UIViewController {
     }()
     
     
-    let loginRegisterButton: UIButton = {
+    lazy var loginRegisterButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor(r: 80, g: 101, b: 161)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Register", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        
+        button.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
         return button
     }()
     
+    @objc func handleRegister(){
+        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text else {
+            print("username password is not correctly assumed")
+            return
+        }
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+            if let error = error {
+                print("fail create user check database")
+                print(error.localizedDescription)
+                return
+            }
+            // sucessfully user created
+            guard let uid = user?.user.uid else {
+                print("no user id found check create user process")
+                return
+            }
+            
+            let ref = Database.database().reference()
+            let usersReference = ref.child("users").child(uid)
+            let values = ["name": name, "email": email]
+            usersReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                if let error = error {
+                    print("error creating user node in database")
+                    print(error.localizedDescription)
+                    return
+                }
+                // uesr node created in database
+            })
+            
+        }
+    }
     
     let nameTextField: UITextField = {
         let tf = UITextField()
