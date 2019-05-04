@@ -12,16 +12,24 @@ import Firebase
 class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
 
-//        let ref = Database.database().reference()
-//        ref.updateChildValues(["some value":123123] as [String: Any])
-        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+        
+        if Auth.auth().currentUser?.uid == nil {
+            // no user logged
+            perform(#selector(handleLogout), with: nil, afterDelay: 0)
+        }
     }
     
     
     @objc func handleLogout(){
+        do {
+            try Auth.auth().signOut()
+        } catch let logoutErorr {
+            print("Error try to log out")
+            print(logoutErorr.localizedDescription)
+        }
+        
         let loginController = LoginController()
         present(loginController, animated: true, completion: nil)
     }
