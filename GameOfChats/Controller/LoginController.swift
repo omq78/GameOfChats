@@ -58,38 +58,6 @@ class LoginController: UIViewController {
         }
     }
     
-    func handleRegister(){
-        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text else {
-            print("username password is not correctly assumed")
-            return
-        }
-        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
-            if let error = error {
-                print("fail create user check database")
-                print(error.localizedDescription)
-                return
-            }
-            // sucessfully user created
-            guard let uid = user?.user.uid else {
-                print("no user id found check create user process")
-                return
-            }
-            
-            let ref = Database.database().reference()
-            let usersReference = ref.child("users").child(uid)
-            let values = ["name": name, "email": email]
-            usersReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
-                if let error = error {
-                    print("error creating user node in database")
-                    print(error.localizedDescription)
-                    return
-                }
-                // uesr node created in database
-                self.dismiss(animated: true, completion: nil)
-            })
-            
-        }
-    }
     
     let nameTextField: UITextField = {
         let tf = UITextField()
@@ -127,11 +95,13 @@ class LoginController: UIViewController {
         return tf
     }()
     
-    let profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "GOT")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
