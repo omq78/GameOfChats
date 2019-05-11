@@ -49,7 +49,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
                 }
                 // auth user created now save user image
                 let imageName = NSUUID().uuidString
-                let storageRef = Storage.storage().reference().child("profile_image").child("\(imageName).png")
+                let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
                 if let image = self.profileImageView.image?.pngData() {
                     storageRef.putData(image, metadata: nil, completion: { (storedImageURL, error) in
                         if let error = error {
