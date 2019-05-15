@@ -31,15 +31,75 @@ class MessagesController: UITableViewController {
             // no user logged
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
         } else {
-            let uid = Auth.auth().currentUser?.uid
-            Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
-                
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.navigationItem.title = dictionary["name"] as? String
-                }
-                
-            }, withCancel: nil)
+            fetchUserAndSetupNavBarTitle()
         }
+    }
+    
+    func fetchUserAndSetupNavBarTitle() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("for some reason logged user id is null")
+            return
+        }
+        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = User()
+                user.name = dictionary["name"] as? String
+                user.email = dictionary["email"] as? String
+                user.profielImageURL = dictionary["profileImageURL"] as? String
+                self.setupNavBarWithUser(user: user)
+//                self.navigationItem.title = dictionary["name"] as? String
+            }
+            
+        }, withCancel: nil)
+    }
+    
+    func setupNavBarWithUser(user: User) {
+        let titleView = UIView()
+        let containerView = UIView()
+        
+//        titleView.backgroundColor = UIColor.red
+        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.navigationItem.titleView = titleView
+        
+        
+        let titleImageView = UIImageView()
+        titleImageView.translatesAutoresizingMaskIntoConstraints = false
+        titleImageView.contentMode = .scaleAspectFill
+        titleImageView.layer.cornerRadius = 20
+        titleImageView.clipsToBounds = true
+        if let userImageURL = user.profielImageURL {
+            titleImageView.loadImageUsingCashWithURLString(urlString: userImageURL)
+        }
+        
+        let titleLabel = UILabel()
+        titleLabel.text = user.name
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+
+        titleView.addSubview(containerView)
+        containerView.addSubview(titleImageView)
+        containerView.addSubview(titleLabel)
+
+        // ios 9 constraints
+        // need x, y, width and height
+        titleImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        titleImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        titleImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        titleImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
+        titleLabel.leftAnchor.constraint(equalTo: titleImageView.rightAnchor, constant: 8).isActive = true
+        titleLabel.centerYAnchor.constraint(equalTo: titleImageView.centerYAnchor).isActive = true
+        titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
+        titleLabel.heightAnchor.constraint(equalTo: titleImageView.heightAnchor).isActive = true
+        
+        containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
+        containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        
+        
+        
     }
     
     @objc func handleLogout(){
@@ -51,6 +111,7 @@ class MessagesController: UITableViewController {
         }
         
         let loginController = LoginController()
+        loginController.messagesController = self
         present(loginController, animated: true, completion: nil)
     }
 }

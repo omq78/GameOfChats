@@ -49,8 +49,8 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
                 }
                 // auth user created now save user image
                 let imageName = NSUUID().uuidString
-                let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
-                if let image = self.profileImageView.image?.pngData() {
+                let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).jpg")
+                if let image = self.profileImageView.image?.jpegData(compressionQuality: 0.1) {
                     storageRef.putData(image, metadata: nil, completion: { (storedImageURL, error) in
                         if let error = error {
                             print("error saving image")
@@ -74,6 +74,11 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
                                         print(error.localizedDescription)
                                         return
                                     }
+                                    let user = User()
+                                    user.name = values["name"] as? String
+                                    user.email = values["email"] as? String
+                                    user.profielImageURL = values["profileImageURL"] as? String
+                                    self.messagesController?.setupNavBarWithUser(user: user)
                                     self.dismiss(animated: true, completion: nil)
                                 })
                             }
