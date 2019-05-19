@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 
 class MessagesController: UITableViewController {
+    var messages = [Message]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,10 +20,42 @@ class MessagesController: UITableViewController {
         let image = UIImage(named: "newmessageicon")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
         checkIfUserLoggedIn()
+        
+        observeMessages()
+    }
+    
+    func observeMessages(){
+        let ref = Database.database().reference().child("messages")
+        ref.observe(.childAdded, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let message = Message()
+                message.fromID = dictionary["fromID"] as? String
+                message.toID = dictionary["toID"] as? String
+                message.text = dictionary["text"] as? String
+                message.timestamp = dictionary["timestamp"] as? NSNumber
+                self.messages.append(message)
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }, withCancel: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "CELLID")
+        cell.textLabel?.text = messages[indexPath.row].toID
+        cell.detailTextLabel?.text = messages[indexPath.row].text
+        return cell
     }
     
     @objc func handleNewMessage(){
         let newMessageController = NewMessageController()
+        newMessageController.messagesController = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }
@@ -98,11 +132,12 @@ class MessagesController: UITableViewController {
         containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         
-        self.navigationController?.navigationBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
+//        self.navigationController?.navigationBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
     }
     
-    @objc func showChatController(){
+    @objc func showChatControllerForUser(user: User){
         let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
         navigationController?.pushViewController(chatLogController, animated: true)
     }
     

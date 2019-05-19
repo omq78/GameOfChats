@@ -5,6 +5,13 @@ import Firebase
 
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate {
+    
+    var user: User? {
+        didSet {
+            navigationItem.title = user?.name
+        }
+    }
+    
     override func viewDidLoad() {
          super.viewDidLoad()
         collectionView.backgroundColor = UIColor.white
@@ -73,10 +80,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
     }
     
     @objc func sendMessage(){
-        let ref = Database.database().reference().child("Messages")
+        let ref = Database.database().reference().child("messages")
         let childRef = ref.childByAutoId()
-        let values = ["text": self.inputTextField.text!, "name": "Send By:"]
-        childRef.updateChildValues(values)
+        let toID = self.user?.id
+        let fromID = Auth.auth().currentUser?.uid
+        let timeStamp: NSNumber = NSNumber(value: NSDate().timeIntervalSince1970)
+        let values = ["text": self.inputTextField.text!, "toID": toID!, "fromID": fromID!, "timestamp": timeStamp] as [String : Any]
+        childRef.updateChildValues(values as [AnyHashable : Any])
     }
 }
 
