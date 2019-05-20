@@ -11,6 +11,9 @@ import Firebase
 
 class MessagesController: UITableViewController {
     var messages = [Message]()
+    var messagesDictionary = [String: Message]()
+    
+    var cellID = "CellID"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +25,8 @@ class MessagesController: UITableViewController {
         checkIfUserLoggedIn()
         
         observeMessages()
+        
+        tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
     }
     
     func observeMessages(){
@@ -33,7 +38,16 @@ class MessagesController: UITableViewController {
                 message.toID = dictionary["toID"] as? String
                 message.text = dictionary["text"] as? String
                 message.timestamp = dictionary["timestamp"] as? NSNumber
-                self.messages.append(message)
+
+                if let toID = message.toID {
+                    self.messagesDictionary[toID] = message
+                }
+                self.messages = Array(self.messagesDictionary.values)
+                self.messages.sorted(by: { (message1, message2) -> Bool in
+                    return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+                })
+                
+//                self.messages.append(message)
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -42,14 +56,18 @@ class MessagesController: UITableViewController {
         }, withCancel: nil)
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "CELLID")
-        cell.textLabel?.text = messages[indexPath.row].toID
-        cell.detailTextLabel?.text = messages[indexPath.row].text
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
+        let  message = messages[indexPath.row]
+        cell.message = message
         return cell
     }
     
