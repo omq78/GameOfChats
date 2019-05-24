@@ -81,12 +81,29 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
     
     @objc func sendMessage(){
         let ref = Database.database().reference().child("messages")
-        let childRef = ref.childByAutoId()
         let toID = self.user?.id
         let fromID = Auth.auth().currentUser?.uid
         let timeStamp: NSNumber = NSNumber(value: NSDate().timeIntervalSince1970)
+        let childRef = ref.childByAutoId()
         let values = ["text": self.inputTextField.text!, "toID": toID!, "fromID": fromID!, "timestamp": timeStamp] as [String : Any]
-        childRef.updateChildValues(values as [AnyHashable : Any])
+        childRef.updateChildValues(values) { (error, ref) in
+            if let error = error {
+                print("Can not insert message Record")
+                print(error.localizedDescription)
+                return
+            }
+            let userMessagesRef = Database.database().reference().child("user-messages").child(fromID!)
+            if let messageID = childRef.key {
+                userMessagesRef.updateChildValues([messageID: "OO"])
+            }
+            
+            let recipientMessageRef = Database.database().reference().child("user-messages").child(toID!)
+            if let messageID = childRef.key {
+                recipientMessageRef.updateChildValues([messageID: "00"])
+            }
+        }
+        // user messages link
+        
     }
 }
 

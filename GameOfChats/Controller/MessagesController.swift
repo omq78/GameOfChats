@@ -24,9 +24,43 @@ class MessagesController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
         checkIfUserLoggedIn()
         
-        observeMessages()
+//        observeMessages()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
+    }
+    
+    func observeUserMessages(){
+        guard let userID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        let ref = Database.database().reference().child("user-messages").child(userID)
+        ref.observe(.childAdded) { (snapshot) in
+            let messageID = snapshot.key
+            let userMessagesRef = Database.database().reference().child("messages").child(messageID)
+            userMessagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let message = Message()
+                    message.fromID = dictionary["fromID"] as? String
+                    message.toID = dictionary["toID"] as? String
+                    message.text = dictionary["text"] as? String
+                    message.timestamp = dictionary["timestamp"] as? NSNumber
+                    
+                    if let toID = message.toID {
+                        self.messagesDictionary[toID] = message
+                    }
+                    self.messages = Array(self.messagesDictionary.values)
+                    self.messages.sort(by: { (message1, message2) -> Bool in
+                        return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+                    })
+                    
+                    //                self.messages.append(message)
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }, withCancel: nil)
+        }
     }
     
     func observeMessages(){
@@ -61,7 +95,7 @@ class MessagesController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+        return self.messages.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,6 +141,13 @@ class MessagesController: UITableViewController {
     }
     
     func setupNavBarWithUser(user: User) {
+        
+        self.messages.removeAll()
+        self.messagesDictionary.removeAll()
+        self.tableView.reloadData()
+        observeUserMessages()
+
+        
         let titleView = UIView()
         let containerView = UIView()
         

@@ -13,17 +13,7 @@ class UserCell: UITableViewCell {
     
     var message: Message? {
         didSet {
-            if let toID = message?.toID {
-                let ref = Database.database().reference().child("users").child(toID)
-                ref.observe(.value, with: { (snapshot) in
-                    if let dictionary = snapshot.value as? [String: AnyObject] {
-                        self.textLabel?.text = dictionary["name"] as? String
-                        if let profileImageURL = dictionary["profileImageURL"] as? String {
-                            self.profileImageView.loadImageUsingCashWithURLString(urlString: profileImageURL)
-                        }
-                    }
-                }, withCancel: nil)
-            }
+            setCellNameAndProfileImage()
             self.detailTextLabel?.text = message?.text
             if let seconds = message?.timestamp?.doubleValue {
                 let messageDate = NSDate(timeIntervalSince1970: seconds)
@@ -33,6 +23,27 @@ class UserCell: UITableViewCell {
             }
         }
     }
+
+    private func setCellNameAndProfileImage(){
+        let chatPartnerId: String?
+        if Auth.auth().currentUser?.uid == message?.fromID {
+            chatPartnerId = message?.toID
+        } else {
+            chatPartnerId = message?.fromID
+        }
+        
+        if let iD = chatPartnerId {
+            let ref = Database.database().reference().child("users").child(iD)
+            ref.observe(.value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    self.textLabel?.text = dictionary["name"] as? String
+                    if let profileImageURL = dictionary["profileImageURL"] as? String {
+                        self.profileImageView.loadImageUsingCashWithURLString(urlString: profileImageURL)
+                    }
+                }
+            }, withCancel: nil)
+        }    }
+    
     
     let timeLabel: UILabel = {
         let label = UILabel()
