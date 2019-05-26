@@ -25,24 +25,19 @@ class UserCell: UITableViewCell {
     }
 
     private func setCellNameAndProfileImage(){
-        let chatPartnerId: String?
-        if Auth.auth().currentUser?.uid == message?.fromID {
-            chatPartnerId = message?.toID
-        } else {
-            chatPartnerId = message?.fromID
+        guard let chatParentID = message?.chatPartnerID() else {
+            return
         }
-        
-        if let iD = chatPartnerId {
-            let ref = Database.database().reference().child("users").child(iD)
-            ref.observe(.value, with: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.textLabel?.text = dictionary["name"] as? String
-                    if let profileImageURL = dictionary["profileImageURL"] as? String {
-                        self.profileImageView.loadImageUsingCashWithURLString(urlString: profileImageURL)
-                    }
+        let ref = Database.database().reference().child("users").child(chatParentID)
+        ref.observe(.value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                self.textLabel?.text = dictionary["name"] as? String
+                if let profileImageURL = dictionary["profileImageURL"] as? String {
+                    self.profileImageView.loadImageUsingCashWithURLString(urlString: profileImageURL)
                 }
-            }, withCancel: nil)
-        }    }
+            }
+        }, withCancel: nil)
+    }
     
     
     let timeLabel: UILabel = {

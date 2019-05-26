@@ -19,6 +19,7 @@
 		3288D379227E3FF200D53C82 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3288D378227E3FF200D53C82 /* NewMessageController.swift */; };
 		3288D37C2281FC9500D53C82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3288D37B2281FC9500D53C82 /* User.swift */; };
 		3288D37E22823EBE00D53C82 /* LoginController+Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3288D37D22823EBE00D53C82 /* LoginController+Handlers.swift */; };
+		32AE8A41229B4733002C2C2E /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AE8A40229B4733002C2C2E /* ChatMessageCell.swift */; };
 		32AFFE89227A3623008EAAC2 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AFFE88227A3623008EAAC2 /* extensions.swift */; };
 		32B75B9D228E20A4002C91A0 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B75B9C228E20A4002C91A0 /* ChatLogController.swift */; };
 		32F680CD227C5C2000082DA9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 32F680CC227C5C2000082DA9 /* GoogleService-Info.plist */; };
@@ -41,6 +42,7 @@
 		3288D378227E3FF200D53C82 /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		3288D37B2281FC9500D53C82 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3288D37D22823EBE00D53C82 /* LoginController+Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController+Handlers.swift"; sourceTree = "<group>"; };
+		32AE8A40229B4733002C2C2E /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		32AFFE88227A3623008EAAC2 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		32B75B9C228E20A4002C91A0 /* ChatLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		32F680CC227C5C2000082DA9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				325CF6F2229306C700F692B5 /* UserCell.swift */,
+				32AE8A40229B4733002C2C2E /* ChatMessageCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				32AFFE89227A3623008EAAC2 /* extensions.swift in Sources */,
 				3288D37E22823EBE00D53C82 /* LoginController+Handlers.swift in Sources */,
 				325451782279A9300082AAC9 /* MessagesController.swift in Sources */,
+				32AE8A41229B4733002C2C2E /* ChatMessageCell.swift in Sources */,
 				325CF6F02292144700F692B5 /* Message.swift in Sources */,
 				3254517E2279A9300082AAC9 /* GameOfChats.xcdatamodeld in Sources */,
 				325CF6F3229306C700F692B5 /* UserCell.swift in Sources */,
