@@ -18,6 +18,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var messagesList = [Message]()
     override func viewDidLoad() {
          super.viewDidLoad()
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
+//        collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.backgroundColor = UIColor.white
         collectionView.alwaysBounceVertical = true
@@ -63,12 +65,31 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let message = self.messagesList[indexPath.item]
         cell?.messageTextView.text = message.text
         
+        cell?.bubbleViewWidth?.constant = estimatedFrameForText(text: message.text!).width + 38
+        
         return cell!
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: 80)
+        var height: CGFloat = 80
+        
+        if let text = messagesList[indexPath.item].text {
+            height = estimatedFrameForText(text: text).height + 30
+        }
+        
+        return CGSize(width: self.view.frame.width, height: height)
     }
+    
+    private func estimatedFrameForText(text: String) -> CGRect {
+        let size = CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)], context: nil)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
     
     lazy var inputTextField: UITextField = {
         let textField = UITextField()
@@ -154,7 +175,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             }
         }
         // user messages link
-        
+        //clear input text
+        inputTextField.text = nil
     }
 }
 
