@@ -67,8 +67,30 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         cell?.bubbleViewWidth?.constant = estimatedFrameForText(text: message.text!).width + 38
         
+        performCellLayoutByMessage(cell: cell!, message: message)
+        
         return cell!
     }
+    
+    func performCellLayoutByMessage(cell: ChatMessageCell, message: Message){
+        if self.user?.id == message.fromID {
+            // do gray
+            cell.bubbleView.backgroundColor = ChatMessageCell.grayBubble
+            cell.messageTextView.textColor = UIColor.black
+            cell.messageImageView.loadImageUsingCashWithURLString(urlString: user!.profielImageURL!)
+            cell.bubbleViewLeftAnchor?.isActive = true
+            cell.bubbleViewRightAnchor?.isActive = false
+        } else {
+            // do blue
+            cell.bubbleView.backgroundColor = ChatMessageCell.blueBubble
+            cell.messageTextView.textColor = UIColor.white
+            cell.messageImageView.image = nil
+            cell.bubbleViewLeftAnchor?.isActive = false
+            cell.bubbleViewRightAnchor?.isActive = true
+        }
+    }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var height: CGFloat = 80

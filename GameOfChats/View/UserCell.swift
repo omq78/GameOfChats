@@ -39,7 +39,7 @@ class UserCell: UITableViewCell {
         }, withCancel: nil)
     }
     
-    
+
     let timeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
@@ -82,7 +82,6 @@ class UserCell: UITableViewCell {
         timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 12).isActive = true
         timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         timeLabel.heightAnchor.constraint(equalTo: self.textLabel!.heightAnchor).isActive = true
-        
     }
     
     required init?(coder aDecoder: NSCoder) {

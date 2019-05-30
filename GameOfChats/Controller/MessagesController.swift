@@ -53,41 +53,21 @@ class MessagesController: UITableViewController {
                     })
                     
                     
-                    //                self.messages.append(message)
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
+
+                    self.reloadTiemr?.invalidate()
+                    self.reloadTiemr = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.performReloadData), userInfo: nil, repeats: false)
                 }
             }, withCancel: nil)
         }
     }
-    
-    func observeMessages(){
-        let ref = Database.database().reference().child("messages")
-        ref.observe(.childAdded, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let message = Message()
-                message.fromID = dictionary["fromID"] as? String
-                message.toID = dictionary["toID"] as? String
-                message.text = dictionary["text"] as? String
-                message.timestamp = dictionary["timestamp"] as? NSNumber
 
-                if let toID = message.toID {
-                    self.messagesDictionary[toID] = message
-                }
-                self.messages = Array(self.messagesDictionary.values)
-                self.messages.sort(by: { (message1, message2) -> Bool in
-                    return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
-                })
-                
-//                self.messages.append(message)
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-        }, withCancel: nil)
+    var reloadTiemr: Timer?
+    
+    @objc func performReloadData(){
+        DispatchQueue.main.async {
+            print("relad messaes table")
+            self.tableView.reloadData()
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
