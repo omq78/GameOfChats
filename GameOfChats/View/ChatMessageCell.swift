@@ -10,6 +10,8 @@ import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
     
+    var chatLog: ChatLogController?
+    
     static let blueBubble = UIColor(r: 0, g: 137, b: 249)
     static let grayBubble = UIColor(r: 224, g: 224, b: 224)
     
@@ -47,15 +49,23 @@ class ChatMessageCell: UICollectionViewCell {
         return imageView
     }()
 
-    let chatImageView: UIImageView = {
+    lazy var chatImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 16
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomTap)))
         return imageView
     }()
 
+    @objc func handleZoomTap(guesture: UITapGestureRecognizer){
+        if let clickedImage = guesture.view as? UIImageView {
+            // PRO TIP: Don't perform custom login in view class
+            self.chatLog?.performZoomInForStartingImageView(startingImageView: clickedImage)
+        }
+    }
     
     
 
