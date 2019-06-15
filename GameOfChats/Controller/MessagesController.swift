@@ -27,7 +27,30 @@ class MessagesController: UITableViewController {
 //        observeMessages()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
+        
+        tableView.allowsMultipleSelectionDuringEditing = true
     }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let loginID = Auth.auth().currentUser?.uid
+        let messageToId = messages[indexPath.row].chatPartnerID()
+        Database.database().reference().child("user-messages").child(loginID!).child(messageToId).removeValue { (error, ref) in
+            if let error = error {
+                print("Error deleting message")
+                print(error)
+                return
+            }
+            
+            self.messagesDictionary.removeValue(forKey: messageToId)
+            self.attemptReloadTable()
+        }
+    }
+    
+    
     
     func observeUserMessages(){
         guard let userID = Auth.auth().currentUser?.uid else {
@@ -44,6 +67,11 @@ class MessagesController: UITableViewController {
 
             }, withCancel: nil)
         }
+        ref.observe(.childRemoved, with: { (snapshot) in
+            self.messagesDictionary.removeValue(forKey: snapshot.key)
+            self.attemptReloadTable()
+        }, withCancel: nil)
+        
     }
 
     private func fetchMessageWithId(messageId: String){

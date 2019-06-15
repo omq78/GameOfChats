@@ -2,7 +2,8 @@
 
 import UIKit
 import Firebase
-
+import MobileCoreServices
+import AVFoundation
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -98,6 +99,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
+        picker.mediaTypes = [kUTTypeImage as String, kUTTypeVideo as String, kUTTypeMovie as String]
         present(picker, animated: true, completion: nil)
     }
     
@@ -105,24 +107,87 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         dismiss(animated: true, completion: nil)
     }
     
+    
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+
+        if let vedioURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
+            // we selected a vedio
+            handleSelectVedioForUrl(url: vedioURL)
+        }
+        else {
+            // we selected an image
+            handleSelectImageForInfo(info: info)
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func handleSelectVedioForUrl(url: URL){
+        var UploadedVedioURL:String?
+        let someFileName = "VedioFile.mp4"
+        let storageRef =  Storage.storage().reference().child(someFileName)
+        storageRef.putFile(from: url, metadata: nil) { (metadata, error) in
+            if let error = error {
+                print("erro uploading vedio to storage")
+                print(error.localizedDescription)
+                return
+            }
+            storageRef.downloadURL(completion: { (storageURL, error) in
+                if let error = error {
+                    print("error getting the uploaded vedio from storage")
+                    print(error.localizedDescription)
+                    return
+                }
+                UploadedVedioURL = storageURL?.absoluteString
+                self.navigationItem.title = self.user?.name
+                
+                // write and send the vedio
+                //"imageURL": imageURL
+                if let thumbnailImage = self.thumbnailImageForFileURL(fileUrl: storageURL!) {
+                    let values = ["imageWidth": thumbnailImage.size.width, "imageHeight": thumbnailImage.size.height, "vedioURL": UploadedVedioURL as AnyObject] as [String : AnyObject]
+                    self.sendmessageWithParameters(parameters: values)
+                }
+            })
+            }.observe(.progress) { (snapshot) in
+                self.navigationItem.title = "\(String(describing: (snapshot.progress?.completedUnitCount)!))"
+        }
+    }
+    
+    private func thumbnailImageForFileURL(fileUrl: URL) -> UIImage? {
+        let asset = AVAsset(url: fileUrl)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
+        do {
+            let thumbnailCGImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1,timescale: 600), actualTime: nil)
+            return UIImage(cgImage: thumbnailCGImage)
+        } catch let error {
+            print("error generating thumbnail image")
+            print(error)
+            return nil
+        }
+    }
+    
+    
+    func handleSelectImageForInfo(info: [UIImagePickerController.InfoKey : Any]){
         var selectedImageFormPicker: UIImage?
         if let editedImage = info[.editedImage] as? UIImage{
             selectedImageFormPicker = editedImage
         } else if let originalImage = info [.originalImage] as? UIImage{
             selectedImageFormPicker = originalImage
         }
-
-        if let selectedImage = selectedImageFormPicker {
-            uploadImageMessage(image: selectedImage)
-        }
         
-        dismiss(animated: true, completion: nil)
-
+        if let selectedImage = selectedImageFormPicker {
+            uploadImageMessage(image: selectedImage) { (imageUrl) in
+                self.sendImageMessage(imageURL: imageUrl, image: selectedImage)
+            }
+        }
     }
     
-    func uploadImageMessage(image: UIImage){
+    
+    func uploadImageMessage(image: UIImage, completion: (_ urlString: String)->()){
         let imageName = NSUUID().uuidString
+        var theStringValueOfImageURL: String?
         if let imageData = image.jpegData(compressionQuality: 0.2) {
             let ref = Storage.storage().reference().child("message-images").child("\(imageName).jpg")
             ref.putData(imageData, metadata: nil) { (metadata, error) in
@@ -137,9 +202,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                         print(error.localizedDescription)
                         return
                     }
-                    self.sendImageMessage(imageURL: url!.absoluteString, image: image)
+                    theStringValueOfImageURL = url?.absoluteString
                 })
             }
+            completion(theStringValueOfImageURL!)
         }
     }
     
