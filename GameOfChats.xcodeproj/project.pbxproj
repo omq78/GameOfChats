@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		32091B2E2279DCA400B6C21D /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32091B2D2279DCA400B6C21D /* LoginController.swift */; };
+		3216755322B59EFE00343BBD /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3216755222B59EFE00343BBD /* ChatInputContainerView.swift */; };
 		325451762279A9300082AAC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325451752279A9300082AAC9 /* AppDelegate.swift */; };
 		325451782279A9300082AAC9 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325451772279A9300082AAC9 /* MessagesController.swift */; };
 		3254517B2279A9300082AAC9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 325451792279A9300082AAC9 /* Main.storyboard */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		32091B2D2279DCA400B6C21D /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		3216755222B59EFE00343BBD /* ChatInputContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
 		325451722279A9300082AAC9 /* GameOfChats.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameOfChats.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		325451752279A9300082AAC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		325451772279A9300082AAC9 /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				325CF6F2229306C700F692B5 /* UserCell.swift */,
+				3216755222B59EFE00343BBD /* ChatInputContainerView.swift */,
 				32AE8A40229B4733002C2C2E /* ChatMessageCell.swift */,
 			);
 			path = View;
@@ -280,6 +283,7 @@
 				32F8DA1E22877DD300994EE8 /* Extensions.swift in Sources */,
 				32AFFE89227A3623008EAAC2 /* extensions.swift in Sources */,
 				3288D37E22823EBE00D53C82 /* LoginController+Handlers.swift in Sources */,
+				3216755322B59EFE00343BBD /* ChatInputContainerView.swift in Sources */,
 				325451782279A9300082AAC9 /* MessagesController.swift in Sources */,
 				32AE8A41229B4733002C2C2E /* ChatMessageCell.swift in Sources */,
 				325CF6F02292144700F692B5 /* Message.swift in Sources */,
